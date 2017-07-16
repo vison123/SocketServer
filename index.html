@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>
+        $(function(){
+            var ws = new WebSocket("ws://localhost:8181");
+
+            ws.onopen = function (e) {
+                $('#incomingChatMessages').append($('<li>Connected</li>'));
+            };
+
+            ws.onmessage = function(message) {
+                $('#incomingChatMessages').append($('<li></li>').text(message));
+            };
+
+            ws.onerror = function() {
+                $('#incomingChatMessages').append($('<li>Connected</li>'));
+            };
+
+            $('#outgoingChatMessage').keypress(function(event) {
+                if(event.which == 13) {
+                    event.preventDefault();
+                    ws.send($('#outgoingChatMessage').val());
+                    $('#incomingChatMessages').append($('<li></li>').text($('#outgoingChatMessage').val()));
+                    $('#outgoingChatMessage').val('');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+Incoming Chat:&nbsp;<ul id="incomingChatMessages"></ul>
+<br />
+<input type="text" id="outgoingChatMessage">
+</body>
+</html>
+
